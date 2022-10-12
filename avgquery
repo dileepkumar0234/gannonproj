@@ -1,0 +1,9 @@
+SELECT coursecode,ROUND(AVG(question_1),1) AS quest1,ROUND(AVG(question_2),1) AS quest2,ROUND(AVG(question_3),1) AS quest3 ,ROUND(AVG(question_4),1) AS quest4,
+ROUND(AVG(question_5),1) AS quest5,ROUND(AVG(question_6),1) AS quest6,ROUND(AVG(question_7),1) AS quest7,ROUND(AVG(question_8),1) AS quest8,ROUND(AVG(question_9),1) AS quest9,
+ROUND(AVG(question_10),1) AS quest10,ROUND(AVG(question_12),1) AS quest11,ROUND(AVG(question_13),1) AS quest12,ROUND(AVG(question_14),1) AS quest13,
+ROUND(AVG(question_15),1) AS quest14,ROUND(AVG(question_16),1) AS quest15,ROUND(AVG(question_17),1) AS quest16,ROUND(AVG(question_18),1) AS quest17,
+ROUND(AVG(question_19),1) AS quest18,ROUND(AVG(question_20),1) AS quest19,ROUND(AVG(question_21),1) AS quest20,ROUND(AVG(question_22),1) AS quest21,
+ROUND(AVG(question_24),1) AS quest22,ROUND(AVG(question_25),1) AS quest23,ROUND(AVG(question_26),1) AS quest24,ROUND(AVG(question_27),1) AS quest25,
+ROUND(AVG(question_28),1) AS quest26,ROUND(AVG(question_30),1) AS quest27,ROUND(AVG(question_31),1) AS quest28,ROUND(AVG(question_32),1)AS quest29
+
+FROM `course_survey` cs GROUP BY cs.coursecode;
