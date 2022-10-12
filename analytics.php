@@ -1,4 +1,22 @@
-<?php include('sesheader.php'); ?>
+<?php include('sesheader.php'); 
+	$questionSql = "SELECT * FROM `questions` WHERE status=1 ORDER BY questid ASC";
+	$rs = mysqli_query($con,$questionSql);
+	$questions =array();
+	if(isset($rs) && !empty($rs)){	
+		while($line = mysqli_fetch_array($rs)){
+			$questions[] = $line;
+		}
+	}
+	$userid = $_SESSION['ses_userid'];
+	$facultyCoursesSql = "SELECT fcid,acdemicyear,semester,subject FROM `faculty_courses` WHERE status=1 AND fuserid=$userid ORDER BY fcid ASC";
+	$rss = mysqli_query($con,$facultyCoursesSql);
+	$res =array();
+	if(isset($rss) && !empty($rss)){	
+		while($line = mysqli_fetch_array($rss)){
+			$res[] = $line;
+		}
+	}
+?>
 <div class="p-3">
 	<nav aria-label="breadcrumb">
 		<ol class="breadcrumb">
@@ -12,40 +30,20 @@
 			<div class="col-12 col-md-3">
 				<div class="form-group">
 					<label>Semester <span class="required">*<span></label>
-					<select class="form-control">
-						<option>16FA</option>
-						<option>16SP</option>
-						<option>17FA</option>
-						<option>17SP</option>
-						<option>18FA</option>
-						<option>18SP</option>
-						<option>19FA</option>
-						<option>19SP</option>
-						<option>20FA</option>
-						<option>20SP</option>
-						<option>21FA</option>
-						<option>21SP</option>
-						<option>22FA</option>
+					<select class="form-control" id="" name="">
+						<?php foreach($res as $resq) { ?>
+							<option value="<?php echo $resq['fcid']; ?>"><?php echo $resq['acdemicyear'].''.$resq['semester']; ?></option>
+						<?php } ?>
 					</select>
 				</div>
 			</div>
 			<div class="col-12 col-md-3">
 				<div class="form-group">
 					<label>Semester <span class="required">*<span></label>
-					<select class="form-control">
-						<option>16FA</option>
-						<option>16SP</option>
-						<option>17FA</option>
-						<option>17SP</option>
-						<option>18FA</option>
-						<option>18SP</option>
-						<option>19FA</option>
-						<option>19SP</option>
-						<option>20FA</option>
-						<option>20SP</option>
-						<option>21FA</option>
-						<option>21SP</option>
-						<option>22FA</option>
+					<select class="form-control" id="" name="">
+						<?php foreach($res as $resq) { ?>
+							<option value="<?php echo $resq['fcid']; ?>"><?php echo $resq['acdemicyear'].''.$resq['semester']; ?></option>
+						<?php } ?>
 					</select>
 				</div>
 			</div>
@@ -53,11 +51,9 @@
 				<div class="form-group mb-3">
 					<label>Question <span class="required">*<span></label>
 					<select class="form-control">
-						<option>Internet Facing</option>
-						<option>2</option>
-						<option>3</option>
-						<option>4</option>
-						<option>5</option>
+						<?php foreach($questions as $quest){ ?>
+							<option value="<?php echo $quest['quest_title']; ?>"><?php echo $quest['question']; ?></option>
+						<?php } ?>
 					</select>
 				</div>
 			</div>
