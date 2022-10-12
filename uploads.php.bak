@@ -146,6 +146,8 @@
 										$semester ='FA';
 									}
 									if(isset($data)){
+										$ayear = $data[0];
+										$ayear = $yearsList[$data[0]];
 										$asubj = $data[1];								
 							?>
 							<th><?php echo $asubj; ?></th>

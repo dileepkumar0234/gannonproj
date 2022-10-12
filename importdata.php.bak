@@ -37,6 +37,7 @@ if(isset($_POST['save_excel_data']) && $_POST['save_excel_data']==1)
 						$data = explode("FA",$coursecode);
 						$semester ='FA';
 					}
+					
 					$ResponseUniqueId = $val[0];
 					$UserIP = $val[1];
 					$Path = $val[2];
@@ -90,15 +91,14 @@ if(isset($_POST['save_excel_data']) && $_POST['save_excel_data']==1)
 					$question_31 = $val[50];
 					$question_32 = $val[51];
 					$question_33 = $val[52];
-
-					if(isset($data)){					
+					
+					if(isset($data)){						
 						$ayear = $data[0];
 						$ayear = $yearsList[$data[0]];
 						$asubj = $data[1];
-						$courseCheck = "SELECT count(fcid) AS cnt FROM faculty_courses WHERE coursecode='$coursecode' AND fuserid=$uid AND status=1";
+						$courseCheck = "SELECT fcid FROM faculty_courses WHERE coursecode='$coursecode' AND status=1";
 						$rs = mysqli_query($con, $courseCheck);
-						$rev = mysqli_fetch_array($rs);
-						if(isset($rs) && isset($rev['cnt']) && $rev['cnt']!=0){
+						if(isset($rs->num_rows) && $rs->num_rows>0){
 							// continue;
 						}else{
 							$courseinsert = "INSERT INTO faculty_courses (fuserid,coursecode,acdemicyear,semester,subject) VALUES ($uid,'$coursecode','$ayear','$semester','$asubj')";
