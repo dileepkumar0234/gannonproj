@@ -95,13 +95,14 @@ if(isset($_POST['save_excel_data']) && $_POST['save_excel_data']==1)
 						$ayear = $data[0];
 						$ayear = $yearsList[$data[0]];
 						$asubj = $data[1];
+						$acdemic2year = $data[0];
 						$courseCheck = "SELECT count(fcid) AS cnt FROM faculty_courses WHERE coursecode='$coursecode' AND fuserid=$uid AND status=1";
 						$rs = mysqli_query($con, $courseCheck);
 						$rev = mysqli_fetch_array($rs);
 						if(isset($rs) && isset($rev['cnt']) && $rev['cnt']!=0){
 							// continue;
 						}else{
-							$courseinsert = "INSERT INTO faculty_courses (fuserid,coursecode,acdemicyear,semester,subject) VALUES ($uid,'$coursecode','$ayear','$semester','$asubj')";
+							$courseinsert = "INSERT INTO faculty_courses (fuserid,coursecode,acdemicyear,semester,subject,acdemic2year) VALUES ($uid,'$coursecode','$ayear','$semester','$asubj')";
 							$result = mysqli_query($con, $courseinsert);
 						}
 						$coursesurveyinsert = "INSERT INTO `course_survey` (`user_id`, `ResponseUniqueId`, `UserIP`, `Path`, `LevelName`, `LevelID`, `CourseCode`, `CourseTitle`, `UniqueID`, `SurveyStart`, `SurveyEnd`, `InstructorName`, `InstructorUsername`, `InstructorEmail`, `InstructorEnrollments`, `TAEnrollments`, `Enrollments`, `Respondents`, `ResponseRate`, `SubmitDate`, `SubmitDevice`, `question_1`, `question_2`, `question_3`, `question_4`, `question_5`, `question_6`, `question_7`, `question_8`, `question_9`, `question_10`, `question_11`, `question_12`, `question_13`, `question_14`, `question_15`, `question_16`, `question_17`, `question_18`, `question_19`, `question_20`, `question_21`, `question_22`, `question_23`, `question_24`, `question_25`, `question_26`, `question_27`, `question_28`, `question_29`, `question_30`, `question_31`, `question_32`, `question_33`) VALUES ($uid,'$ResponseUniqueId','$UserIP','$Path','$LevelName','$LevelID','$CourseCode','$CourseTitle','$UniqueID','$SurveyStart','$SurveyEnd','$InstructorName','$InstructorUsername','$InstructorEmail','$InstructorEnrollments','$TAEnrollments','$Enrollments','$Respondents','$ResponseRate','$SubmitDate','$SubmitDevice','$question_1','$question_2','$question_3','$question_4','$question_5','$question_6','$question_7','$question_8','$question_9','$question_10','$question_11','$question_12','$question_13','$question_14','$question_15','$question_16','$question_17','$question_18','$question_19','$question_20','$question_21','$question_22','$question_23','$question_24','$question_25','$question_26','$question_27','$question_28','$question_29','$question_30','$question_31','$question_32','$question_33')";

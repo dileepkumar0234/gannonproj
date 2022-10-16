@@ -44,35 +44,35 @@
 				$i=0;
 				foreach($results as $key=>$arrayres){
 					$subjects[$i]= $arrayres['coursecode'];
-					$questions1['quest1'][$i] = $arrayres['quest1'];
-					$questions1['quest2'][$i] = $arrayres['quest2'];
-					$questions1['quest3'][$i] = $arrayres['quest3'];
-					$questions1['quest4'][$i] = $arrayres['quest4'];
-					$questions1['quest5'][$i] = $arrayres['quest5'];
-					$questions1['quest6'][$i] = $arrayres['quest6'];
-					$questions1['quest7'][$i] = $arrayres['quest7'];
-					$questions1['quest8'][$i] = $arrayres['quest8'];
-					$questions1['quest9'][$i] = $arrayres['quest9'];
-					$questions1['quest10'][$i] = $arrayres['quest10'];
-					$questions1['quest11'][$i] = $arrayres['quest11'];
-					$questions1['quest12'][$i] = $arrayres['quest12'];
-					$questions1['quest13'][$i] = $arrayres['quest13'];
-					$questions1['quest14'][$i] = $arrayres['quest14'];
-					$questions1['quest15'][$i] = $arrayres['quest15'];
-					$questions1['quest16'][$i] = $arrayres['quest16'];
-					$questions1['quest17'][$i] = $arrayres['quest17'];
-					$questions1['quest18'][$i] = $arrayres['quest18'];
-					$questions1['quest19'][$i] = $arrayres['quest19'];
-					$questions1['quest20'][$i] = $arrayres['quest20'];
-					$questions1['quest21'][$i] = $arrayres['quest21'];
-					$questions1['quest22'][$i] = $arrayres['quest22'];
-					$questions1['quest23'][$i] = $arrayres['quest23'];
-					$questions1['quest24'][$i] = $arrayres['quest24'];
-					$questions1['quest25'][$i] = $arrayres['quest25'];
-					$questions1['quest26'][$i] = $arrayres['quest26'];
-					$questions1['quest27'][$i] = $arrayres['quest27'];
-					$questions1['quest28'][$i] = $arrayres['quest28'];
-					$questions1['quest29'][$i] = $arrayres['quest29'];
+					$questions1['question_1'][$i] = $arrayres['quest1'];
+					$questions1['question_2'][$i] = $arrayres['quest2'];
+					$questions1['question_3'][$i] = $arrayres['quest3'];
+					$questions1['question_4'][$i] = $arrayres['quest4'];
+					$questions1['question_5'][$i] = $arrayres['quest5'];
+					$questions1['question_6'][$i] = $arrayres['quest6'];
+					$questions1['question_7'][$i] = $arrayres['quest7'];
+					$questions1['question_8'][$i] = $arrayres['quest8'];
+					$questions1['question_9'][$i] = $arrayres['quest9'];
+					$questions1['question_10'][$i] = $arrayres['quest10'];
+					$questions1['question_12'][$i] = $arrayres['quest11'];
+					$questions1['question_13'][$i] = $arrayres['quest12'];
+					$questions1['question_14'][$i] = $arrayres['quest13'];
+					$questions1['question_15'][$i] = $arrayres['quest14'];
+					$questions1['question_16'][$i] = $arrayres['quest15'];
+					$questions1['question_17'][$i] = $arrayres['quest16'];
+					$questions1['question_18'][$i] = $arrayres['quest17'];
+					$questions1['question_19'][$i] = $arrayres['quest18'];
+					$questions1['question_20'][$i] = $arrayres['quest19'];
+					$questions1['question_21'][$i] = $arrayres['quest20'];
+					$questions1['question_22'][$i] = $arrayres['quest21'];
+					$questions1['question_24'][$i] = $arrayres['quest22'];
+					$questions1['question_25'][$i] = $arrayres['quest23'];
+					$questions1['question_26'][$i] = $arrayres['quest24'];
+					$questions1['question_27'][$i] = $arrayres['quest25'];
+					$questions1['question_28'][$i] = $arrayres['quest26'];
+					$questions1['question_30'][$i] = $arrayres['quest27'];
+					$questions1['question_31'][$i] = $arrayres['quest28'];
+					$questions1['question_32'][$i] = $arrayres['quest29'];
 					$i++;
 				}
 			}
@@ -96,7 +96,6 @@
 				margin: 10px auto;
 				text-align: center;
 				width: 100%;
-				max-width: 500px;
 			}
 
 			#datatable caption {
@@ -156,7 +155,7 @@
 						<?php foreach($questions1 as $key=>$quest){ 
 						?>
 							<tr>
-								<th><?php echo $key;?></th>
+								<th><?php echo ucfirst($key);?></th>
 								<?php foreach($quest as $avgquest){ ?>
 									<td><?php echo $avgquest; ?></td>								
 								<?php } ?>
@@ -187,8 +186,6 @@
 </script>
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/modules/data.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
-<script src="https://code.highcharts.com/modules/accessibility.js"></script>
 <script>
 	Highcharts.chart('container', {
 		data: {

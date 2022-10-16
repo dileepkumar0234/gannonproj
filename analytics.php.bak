@@ -55,7 +55,7 @@
 			if(isset($rsss) && !empty($rsss)){
 				$linee = mysqli_fetch_assoc($rsss);
 				if(isset($linee['question']) && $linee['question']!=""){
-					$newdata[$j] = floatval($linee['question']);
+					$newdata[$j] = intval($linee['question']);
 				}else{
 					$newdata[$j] = 0;
 				}
