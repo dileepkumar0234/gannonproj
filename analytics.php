@@ -16,59 +16,82 @@
 			$res[] = $line;
 		}
 	}
-	$question = $_GET['question'];
-	$questSql = "SELECT question FROM `questions` WHERE status=1 AND quest_title='$question'";
-	$rs = mysqli_query($con,$questSql);
-	$ques='';
-	if(isset($rs) && !empty($rs)){	
-		$line = mysqli_fetch_assoc($rs);
-		$ques = $line['question'];
-	}
-	$question  = $_GET['question'];
-	$from_date = $_GET['sDate'];
-	$to_date   = $_GET['eDate'];
-	$subjectsSql = "SELECT `fuserid`,`coursecode`,CONCAT(acdemic2year,semester) AS scodes,subject FROM `faculty_courses` WHERE fuserid=$userid AND `acdemicyear`>=$from_date AND `acdemicyear`<=$to_date AND STATUS=1 ORDER BY acdemicyear;";
-	$rss = mysqli_query($con,$subjectsSql);
 	$semesterList =array();
 	$subjectsList =array();
 	$coursecodes =array();
-	if(isset($rss) && !empty($rss)){
-		$i=0;		
-		while($line = mysqli_fetch_array($rss)){
-			$coursecodes[]  = $line['coursecode'];
-			$semesterList[] = $line['scodes'];
-			$subjectsList[] = $line['subject'];
-		}
-	}
-	$subjectsList = array_values(array_unique($subjectsList));
-	$semesterList = array_values(array_unique($semesterList));
 	$dataPoints = array();
-	$i=0;		
-	foreach($subjectsList As $key=>$s){
-		$seme = $s;
-		$newdata = array();
-		$j=0;
-		foreach($semesterList As $key=>$sub){
-			$ccode = $sub.''.$s;
-			$questionSql = "SELECT ROUND(AVG($question),1) question FROM `course_survey` WHERE user_id=$userid AND `CourseCode` LIKE '%$ccode%'";
-			$rsss = mysqli_query($con,$questionSql);
-			if(isset($rsss) && !empty($rsss)){
-				$linee = mysqli_fetch_assoc($rsss);
-				if(isset($linee['question']) && $linee['question']!=""){
-					$newdata[$j] = floatval($linee['question']);
-				}else{
-					$newdata[$j] = 0;
-				}
-			}			
-			$j++;
+	if(isset($_GET['question']) && $_GET['question']!=""){
+		$question = $_GET['question'];
+		$questSql = "SELECT question FROM `questions` WHERE status=1 AND quest_title='$question'";
+		$rs = mysqli_query($con,$questSql);
+		$ques='';
+		if(isset($rs) && !empty($rs)){	
+			$line = mysqli_fetch_assoc($rs);
+			$ques = $line['question'];
 		}
+		$question  = $_GET['question'];
+		$from_date = $_GET['sDate'];
+		$to_date   = $_GET['eDate'];
+		$subjectsSql = "SELECT `fuserid`,`coursecode`,CONCAT(acdemic2year,semester) AS scodes,subject FROM `faculty_courses` WHERE fuserid=$userid AND `acdemicyear`>=$from_date AND `acdemicyear`<=$to_date AND STATUS=1 ORDER BY acdemicyear;";
+		$rss = mysqli_query($con,$subjectsSql);		
+		if(isset($rss) && !empty($rss)){
+			$i=0;		
+			while($line = mysqli_fetch_array($rss)){
+				$coursecodes[]  = $line['coursecode'];
+				$semesterList[] = $line['scodes'];
+				$subjectsList[] = $line['subject'];
+			}
+		}
+		$subjectsList = array_values(array_unique($subjectsList));
+		$semesterList = array_values(array_unique($semesterList));
+		
+		$i=0;
+		$mean_array = array();
+		$mean_array1 = array();
+		foreach($subjectsList As $key=>$s){
+			$seme = $s;
+			$newdata = array();
+			$j=0;
+			$mean_subject_cnt = 0;
+			$mean_subject_array = array();
+			foreach($semesterList As $key=>$sub){
+				$ccode = $sub.''.$s;
+				$questionSql = "SELECT ROUND(AVG($question),1) question FROM `course_survey` WHERE user_id=$userid AND `CourseCode` LIKE '%$ccode%'";
+				$rsss = mysqli_query($con,$questionSql);
+				if(isset($rsss) && !empty($rsss)){
+					$linee = mysqli_fetch_assoc($rsss);
+					$mean_subject_cnt++;
+					if(isset($linee['question']) && $linee['question']!=""){
+						$newdata[$j] = floatval($linee['question']);
+						$mean_subject_array[] = $linee['question'];
+					}else{
+						$newdata[$j] = 0;
+					}
+				}			
+				$j++;
+			}
+			$mean_subject_cnt;
+			$mean_array[] =  round(array_sum($mean_subject_array)/$mean_subject_cnt,2);
+			$mean_array1[] = round(array_sum($mean_subject_array)/count($mean_subject_array),2);
+			$dataPoints[] = array(
+				'name' => $s,
+				'data' => $newdata,
+				'type' => 'column',
+			);
+			$i++;
+		} 
 		$dataPoints[] = array(
-			'name' => $s,
-			'data' => $newdata
+			'name' => 'sub exists',
+			'data' => $mean_array1,
+			'type' => 'spline',
 		);
-		$i++;
-	}
-	$data =json_encode($dataPoints);
+		// $dataPoints[] = array(
+			// 'name' => 'sub not exists',
+			// 'data' => $mean_array,
+			// 'type' => 'spline',
+		// );
+		$data =json_encode($dataPoints); 
+	}	
 ?>
 <div class="p-3">
 	<nav aria-label="breadcrumb">
@@ -126,6 +149,11 @@
 			</div>
 		</form>
 		<h5 class="mt-4">Report</h5>
+		<?php 
+			// echo "Mean for all subjects : ".array_sum($mean_array)/count($mean_array);
+			// echo "<br>";
+			// echo "Mean for existed subjects : ".array_sum($mean_array1)/count($mean_array1);
+		?>
 		<div class="row" id="container">	
 		</div>
 	</div>
@@ -163,7 +191,8 @@
 <script src="https://code.highcharts.com/modules/data.js"></script>
 
 <script>
-$(function(){		
+$(function(){
+	var mean = "<?php echo round(array_sum($mean_array1)/count($mean_array1),2)?>";
 	<?php if(isset($ques) & $ques!=""){ ?>			
 		Highcharts.chart('container', {				
 			chart: {
@@ -171,6 +200,8 @@ $(function(){
 			},				
 			title: {	
 				text: '<?php echo $ques; ?>',				
+			},subtitle: {	
+				text: 'Overall Mean: '+mean,				
 			},				
 			xAxis:{					
 				categories: <?php echo json_encode($semesterList); ?>,					
