@@ -20,6 +20,8 @@
 	$subjectsList =array();
 	$coursecodes =array();
 	$dataPoints = array();
+	
+	$finalMean=0;
 	if(isset($_GET['question']) && $_GET['question']!=""){
 		$question = $_GET['question'];
 		$questSql = "SELECT question FROM `questions` WHERE status=1 AND quest_title='$question'";
@@ -48,6 +50,7 @@
 		$i=0;
 		$mean_array = array();
 		$mean_array1 = array();
+		$mean_subject_array_sem_sub = array();
 		foreach($subjectsList As $key=>$s){
 			$seme = $s;
 			$newdata = array();
@@ -64,26 +67,42 @@
 					if(isset($linee['question']) && $linee['question']!=""){
 						$newdata[$j] = floatval($linee['question']);
 						$mean_subject_array[] = $linee['question'];
+						$mean_subject_array_sem_sub[$sub][$s] = $linee['question'];
 					}else{
 						$newdata[$j] = 0;
 					}
 				}			
 				$j++;
 			}
-			$mean_subject_cnt;
-			$mean_array[] =  round(array_sum($mean_subject_array)/$mean_subject_cnt,2);
-			$mean_array1[] = round(array_sum($mean_subject_array)/count($mean_subject_array),2);
+			// $mean_array[] =  round(array_sum($mean_subject_array)/$mean_subject_cnt,2);
+			// $mean_array1[] = round(array_sum($mean_subject_array)/count($mean_subject_array),2);
 			$dataPoints[] = array(
 				'name' => $s,
 				'data' => $newdata,
 				'type' => 'column',
 			);
 			$i++;
+			//echo $i;
 		} 
+		$sem_mean_arr = array();
+		foreach($mean_subject_array_sem_sub as $sem => $subjs){
+			$sub_avg_total = 0;
+			foreach($subjs as $sub => $subj_avg){
+				$sub_avg_total += $subj_avg;
+			}
+			$sem_mean = $sub_avg_total/count($subjs);
+			$sem_mean_arr[] = $sem_mean;
+		}
 		$dataPoints[] = array(
-			'name' => 'sub exists',
-			'data' => $mean_array1,
-			'type' => 'spline',
+			'name'  => 'Avg. Each Subject',
+			'type'  => 'spline',
+			'data'  => $sem_mean_arr,
+			'marker' =>
+				array(
+				'lineWidth'=> 2,
+				'lineColor'=> 'Highcharts.getOptions().colors[3]',
+				'fillColor'=> 'white'
+				)
 		);
 		// $dataPoints[] = array(
 			// 'name' => 'sub not exists',
@@ -91,6 +110,10 @@
 			// 'type' => 'spline',
 		// );
 		$data =json_encode($dataPoints); 
+		if(count($sem_mean_arr)>0){
+			$finalMean = round(array_sum($sem_mean_arr)/count($sem_mean_arr),2);
+		}
+		//echo "<pre>";print_r($mean_subject_array_sem_sub);
 	}	
 ?>
 <div class="p-3">
@@ -148,14 +171,12 @@
 				</div>
 			</div>
 		</form>
-		<h5 class="mt-4">Report</h5>
-		<?php 
-			// echo "Mean for all subjects : ".array_sum($mean_array)/count($mean_array);
-			// echo "<br>";
-			// echo "Mean for existed subjects : ".array_sum($mean_array1)/count($mean_array1);
-		?>
-		<div class="row" id="container">	
-		</div>
+		<?php if($finalMean>0){ ?>
+			<h5 class="mt-4">Survey Report</h5>		
+			<div class="row" id="container"></div>
+		<?php }else{ ?>
+			<div class="row">No Result Found</div>
+		<?php }?>
 	</div>
 </div>
 <?php include('sesfooter.php'); ?>
@@ -192,35 +213,37 @@
 
 <script>
 $(function(){
-	var mean = "<?php echo round(array_sum($mean_array1)/count($mean_array1),2)?>";
-	<?php if(isset($ques) & $ques!=""){ ?>			
-		Highcharts.chart('container', {				
-			chart: {
-				type: 'column'				
-			},				
-			title: {	
-				text: '<?php echo $ques; ?>',				
-			},subtitle: {	
-				text: 'Overall Mean: '+mean,				
-			},				
-			xAxis:{					
-				categories: <?php echo json_encode($semesterList); ?>,					
-				crosshair: true			
-			},	
-			yAxis: {		
-				min: 0,		
+	var mean = "<?php echo $finalMean; ?>";
+	<?php if(isset($ques) & $ques!=""){ ?>	
+		if(mean>0){
+			Highcharts.chart('container', {				
+				chart: {
+					type: 'column'				
+				},				
 				title: {	
-					text: 'Ratting'		
-				}			
-			},				
-			plotOptions: {		
-				column: {		
-					pointPadding: 0.2,		
-					borderWidth: 0			
-				}			
-			},				
-			series: <?php echo $data; ?>	
-		});		
+					text: '<?php echo $ques; ?>',				
+				},subtitle: {	
+					text: 'Overall Mean: '+mean,				
+				},				
+				xAxis:{					
+					categories: <?php echo json_encode($semesterList); ?>,					
+					crosshair: true			
+				},	
+				yAxis: {		
+					min: 0,		
+					title: {	
+						text: 'Ratting'		
+					}			
+				},				
+				plotOptions: {		
+					column: {		
+						pointPadding: 0.2,		
+						borderWidth: 0			
+					}			
+				},				
+				series: <?php echo $data; ?>	
+			});	
+		}		
 	<?php } ?>    
 });
 </script>
