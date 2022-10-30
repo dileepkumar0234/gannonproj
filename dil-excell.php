@@ -89,5 +89,8 @@
 	readfile($file_url);
 	exit;
 
-
+hostname' => 'localhost',
+	'username' => 'freelstm_getcredexuser',
+	'password' => 'myuibJ*cKy',
+	'database' => 'freelstm_getcredex',
 ?>
