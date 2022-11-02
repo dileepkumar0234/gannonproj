@@ -208,13 +208,12 @@
 		}
 	} 
 </script>	
-<script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/data.js"></script>
-
-<script>
-$(function(){
-	var mean = "<?php echo $finalMean; ?>";
-	<?php if(isset($ques) & $ques!=""){ ?>	
+<?php if(isset($_GET['question']) && $_GET['question']!=""){ ?>	
+	<script src="https://code.highcharts.com/highcharts.js"></script>
+	<script src="https://code.highcharts.com/modules/data.js"></script>
+	<script>
+	$(function(){		
+		var mean = "<?php echo $finalMean; ?>";
 		if(mean>0){
 			Highcharts.chart('container', {				
 				chart: {
@@ -243,7 +242,7 @@ $(function(){
 				},				
 				series: <?php echo $data; ?>	
 			});	
-		}		
-	<?php } ?>    
-});
-</script>
+		}  
+	});
+	</script>
+<?php } ?>  
